@@ -98,10 +98,10 @@ def curve_to_lut(colorspace, gamma, outlutfile, out_type=None, out_format=None,
         # gamma mode
         if direction == Direction.DECODE:
             gradation = lambda value: gamma_to_lin(value, gamma)
-            title = "Gamma{0}_to_lin".format(gamma)
+            title = "Gamma{0}_To_Lin".format(gamma)
         else:
             gradation = lambda value: lin_to_gamma(value, gamma)
-            title = "Lin_to_gamma{0}".format(gamma)
+            title = "Lin_To_gamma{0}".format(gamma)
     else:
         # colorspace mode
         try:
@@ -112,10 +112,10 @@ def curve_to_lut(colorspace, gamma, outlutfile, out_type=None, out_format=None,
                                        "Colorspace!").format(colorspace))
         if direction == Direction.DECODE:
             gradation = colorspace_obj.decode_gradation
-            title = "{0}_to_lin".format(colorspace)
+            title = "{0}_To_Lin".format(colorspace)
         else:
             gradation = colorspace_obj.encode_gradation
-            title = "Lin_to_{0}".format(colorspace)
+            title = "Lin_To_{0}".format(colorspace)
     # get preset and write function
     if preset:
         write_function = get_write_function(preset, overwrite_preset,
