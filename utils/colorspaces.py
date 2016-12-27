@@ -689,7 +689,7 @@ PROPHOTO = ProPhoto()
 
 COLORSPACES = {
     'Rec709': REC709,
-    'AlexaLogCV3': ALEXALOGCV3,
+    'AlexaV3LogC': ALEXALOGCV3,
     'WideGamut': WIDEGAMUT,
     'Rec2020_10bits': REC2020_10B,
     'Rec2020_12bits': REC2020_12B,
