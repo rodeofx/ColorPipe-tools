@@ -294,6 +294,23 @@ class ACEScg(ACES):
         return 0.32168, 0.33767
 
 
+class ACEScgD65(ACES):
+    """ACES cg Colorspace (P1 primaries and linear encoding)
+
+    """
+    def get_red_primaries(self):
+        return 0.713, 0.293
+
+    def get_green_primaries(self):
+        return 0.165, 0.830
+
+    def get_blue_primaries(self):
+        return 0.128, 0.044
+
+    def get_white_point(self):
+        return 0.3127, 0.3290
+
+
 class ACEScc(ACEScg):
     """ACEScc Colorspace (P1 primaries and log encoding)
 
@@ -567,6 +584,85 @@ class VGamutVLog(AbstractColorspace):
             return math.pow(10.0, ((value - self.d) / self.c)) - self.b
 
 
+class ProPhoto(AbstractColorspace):
+    """ProPhoto ROMM RGB (https://en.wikipedia.org/wiki/ProPhoto_RGB_color_space)
+
+    """
+    def get_red_primaries(self):
+        return 0.7347, 0.2653
+
+    def get_green_primaries(self):
+        return 0.1596, 0.8404
+
+    def get_blue_primaries(self):
+        return 0.0366, 0.0001
+
+    def get_white_point(self):
+        # return 0.3457, 0.3585  # D50
+        return 0.32168, 0.33767  # D60
+        # return 0.3127, 0.3290  # D65
+
+    def _encode_gradation(self, value):
+        pass
+
+    def _decode_gradation(self, value):
+        pass
+
+
+class SoftClip(AbstractColorspace):
+    """Soft clip gradation
+
+    """
+    def get_red_primaries(self):
+        raise NotImplementedError("Soft clip doesn't have primaries")
+
+    def get_green_primaries(self):
+        raise NotImplementedError("Soft clip doesn't have primaries")
+
+    def get_blue_primaries(self):
+        raise NotImplementedError("Soft clip doesn't have primaries")
+
+    def get_white_point(self):
+        raise NotImplementedError("Soft clip doesn't have primaries")
+
+    def _encode_gradation(self, value):
+        return math.atan(0.5 * math.pi * value) / (0.5 * math.pi)
+
+    def _decode_gradation(self, value):
+        return math.tan(value / (2 / math.pi)) / (math.pi / 2.0)
+
+
+class NegativeRollOff(AbstractColorspace):
+    """Negative Roll Off
+
+    """
+    def __init__(self, floor=0.0003):
+        self.floor = floor
+
+    def get_red_primaries(self):
+        raise NotImplementedError("Negative Roll Off doesn't have primaries")
+
+    def get_green_primaries(self):
+        raise NotImplementedError("Negative Roll Off doesn't have primaries")
+
+    def get_blue_primaries(self):
+        raise NotImplementedError("Negative Roll Off doesn't have primaries")
+
+    def get_white_point(self):
+        raise NotImplementedError("Negative Roll Off doesn't have primaries")
+
+    def _encode_gradation(self, value):
+        if value < self.floor:
+            return self.floor * value / (1 + self.floor) + self.floor / (1 + self.floor)
+        return value
+
+    def _decode_gradation(self, value):
+        if value < self.floor:
+            #return value * (1 + self.floor) / self.floor - 1
+            return ((1 + self.floor) * value - self.floor) / self.floor
+        return value
+
+
 REC709 = Rec709()
 ALEXALOGCV3 = AlexaLogCV3()
 WIDEGAMUT = WideGamut()
@@ -585,6 +681,11 @@ SGAMUTSLOG2 = SGamutSLog2()
 SGAMUTSLOG3 = SGamutSLog3()
 SGAMUT3CINESLOG3 = SGamut3CineSLog3()
 VGAMUTVLOG = VGamutVLog()
+SOFTCLIP = SoftClip()
+NEGATIVEROLLOFF = NegativeRollOff()
+ACESCGD65 = ACEScgD65()
+PROPHOTO = ProPhoto()
+
 
 COLORSPACES = {
     'Rec709': REC709,
@@ -605,4 +706,12 @@ COLORSPACES = {
     'SGamutSLog3': SGAMUTSLOG3,
     'SGamut3CineSLog3': SGAMUT3CINESLOG3,
     'VGamutVLog': VGAMUTVLOG,
+    'SoftClip': SOFTCLIP,
+    'NegativeRollOff': NEGATIVEROLLOFF,
+    'ACEScgD65': ACESCGD65,
+    'ProPhoto': PROPHOTO
+
 }
+
+
+
